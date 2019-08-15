@@ -1,0 +1,28 @@
+{
+  "name": "react-native-byron-tabs",
+  "version": "1.0.8",
+  "description": "react-native-byron-tabs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/472647301/react-native-byron-tabs.git"
+  },
+  "keywords": [
+    "react-native-byron-tabs"
+  ],
+  "author": "Byron ZHU <472647301@qq.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/472647301/react-native-byron-tabs/issues"
+  },
+  "homepage": "https://github.com/472647301/react-native-byron-tabs#readme",
+  "devDependencies": {
+    "@react-navigation/core": "^3.4.2",
+    "react": "^16.9.0",
+    "react-native": "^0.60.5",
+    "react-native-screens": "^1.0.0-alpha.23"
+  }
+}
