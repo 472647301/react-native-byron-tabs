@@ -22,6 +22,15 @@ export function customNavTab(CustomTabView, BackgroundView) {
 
     onStyleChange = style => {
       this.setState({ style: style })
+      if (this.view && this.view.onStyleChange) {
+        this.view.onStyleChange(style)
+      }
+    }
+
+    onWithoutFeedback = () => {
+      if (this.tab && this.tab.onWithoutFeedback) {
+        this.tab.onWithoutFeedback()
+      }
     }
 
     state = {
@@ -29,19 +38,27 @@ export function customNavTab(CustomTabView, BackgroundView) {
       style: {}
     }
 
+    tab = null
+    view = null
+
     render() {
       const { navigation, renderScene } = this.props
       const { routes } = navigation.state
       const { loaded, style } = this.state
       const Background = BackgroundView || View
       return (
-        <Background style={styles.views}>
+        <Background
+          style={styles.views}
+          ref={ref => (this.view = ref)}
+          onWithoutFeedback={this.onWithoutFeedback}
+        >
           <CustomTabView
             routes={routes}
-            onIndexChange={this.props.onIndexChange}
-            onTabPress={this.props.onTabPress}
-            onTabLongPress={this.props.onTabLongPress}
             navigation={navigation}
+            ref={ref => (this.tab = ref)}
+            onTabPress={this.props.onTabPress}
+            onIndexChange={this.props.onIndexChange}
+            onTabLongPress={this.props.onTabLongPress}
             onStyleChange={this.onStyleChange.bind(this)}
           />
           <ScreenContainer style={[styles.pages, style]}>
