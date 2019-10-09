@@ -12,7 +12,7 @@ import { Platform, StyleSheet, View } from 'react-native'
  * @param {*} CustomTabView
  * @param {*} BackgroundView
  */
-export function customNavTab(CustomTabView, BackgroundView) {
+export function customNavTab(CustomTabView, BackgroundView, _mode) {
   return class TabNavigationView extends React.PureComponent {
     static getDerivedStateFromProps(nextProps, prevState) {
       const { index } = nextProps.navigation.state
@@ -114,7 +114,7 @@ export function customNavTab(CustomTabView, BackgroundView) {
 
     state = {
       style: {},
-      mode: 'bottom',
+      mode: _mode || 'bottom',
       loaded: [this.props.navigation.state.index]
     }
 

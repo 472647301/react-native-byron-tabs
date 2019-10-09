@@ -15,7 +15,7 @@ type IMode = 'top' | 'bottom' | 'left' | 'right'
 
 export declare function createNavTab(
   tabView: React.ComponentType
-): (routes: Array<IRoute>, config?: any) => any
+): (routes: any, config?: any) => any
 
 export declare function customNavTab(
   CustomTabView: any,
@@ -44,7 +44,7 @@ export interface ICustomTabView {
   /**
    * navigation 对象
    */
-  navigation: NavigationScreenProp
+  navigation: NavigationScreenProp<{}>
   /**
    * 改变屏幕容器样式
    */
