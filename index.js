@@ -112,6 +112,12 @@ export function customNavTab(CustomTabView, BackgroundView, _mode) {
       )
     }
 
+    onClickTabItem = key => {
+      if (this.tab.onClickTabItem) {
+        this.tab.onClickTabItem(key)
+      }
+    }
+
     state = {
       style: {},
       mode: _mode || 'bottom',
@@ -127,6 +133,7 @@ export function customNavTab(CustomTabView, BackgroundView, _mode) {
             <Background
               style={styles.views}
               ref={ref => (this.view = ref)}
+              onClickTabItem={this.onClickTabItem}
               onClickBackground={this.onClickBackground}
             >
               <View style={styles.views_top}>
@@ -140,6 +147,7 @@ export function customNavTab(CustomTabView, BackgroundView, _mode) {
             <Background
               style={styles.views}
               ref={ref => (this.view = ref)}
+              onClickTabItem={this.onClickTabItem}
               onClickBackground={this.onClickBackground}
             >
               <View style={styles.views_bottom}>
@@ -153,6 +161,7 @@ export function customNavTab(CustomTabView, BackgroundView, _mode) {
             <Background
               style={styles.views}
               ref={ref => (this.view = ref)}
+              onClickTabItem={this.onClickTabItem}
               onClickBackground={this.onClickBackground}
             >
               <View style={styles.views_left}>
@@ -166,6 +175,7 @@ export function customNavTab(CustomTabView, BackgroundView, _mode) {
             <Background
               style={styles.views}
               ref={ref => (this.view = ref)}
+              onClickTabItem={this.onClickTabItem}
               onClickBackground={this.onClickBackground}
             >
               <View style={styles.views_right}>

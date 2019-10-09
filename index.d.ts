@@ -19,11 +19,19 @@ export declare function createNavTab(
 
 export declare function customNavTab(
   CustomTabView: any,
-  BackgroundView?: any
+  BackgroundView?: any,
+  mode?: string
 ): React.ComponentType
 
 export interface IBackgroundView extends React.SFC {
+  /**
+   * 点击屏幕
+   */
   onClickBackground(): void
+  /**
+   * 点击导航栏
+   */
+  onClickTabItem(key: string): void
 }
 
 export interface ICustomTabView {
