@@ -7,6 +7,11 @@ import { NavigationActions } from '@react-navigation/core'
 import { Screen, screensEnabled, ScreenContainer } from 'react-native-screens'
 import { Platform, StyleSheet, View } from 'react-native'
 
+/**
+ * 自定义导航栏
+ * @param {*} CustomTabView
+ * @param {*} BackgroundView
+ */
 export function customNavTab(CustomTabView, BackgroundView) {
   return class TabNavigationView extends React.PureComponent {
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -20,73 +25,166 @@ export function customNavTab(CustomTabView, BackgroundView) {
       }
     }
 
+    tab = null
+    view = null
+
+    /**
+     * 改变试图样式
+     */
     onStyleChange = style => {
       this.setState({ style: style })
-      if (this.view && this.view.onStyleChange) {
+      if (this.view.onStyleChange) {
         this.view.onStyleChange(style)
       }
     }
 
-    onWithoutFeedback = () => {
-      if (this.tab && this.tab.onWithoutFeedback) {
-        this.tab.onWithoutFeedback()
+    /**
+     * 点击背景视图
+     */
+    onClickBackground = () => {
+      if (this.tab.onClickBackground) {
+        this.tab.onClickBackground()
       }
     }
 
-    state = {
-      loaded: [this.props.navigation.state.index],
-      style: {}
+    /**
+     * 改变模式
+     */
+    onModeChange = mode => {
+      this.setState({ mode: mode })
+      if (this.tab.onModeChange) {
+        this.tab.onModeChange(mode)
+      }
+      if (this.view.onModeChange) {
+        this.view.onModeChange(mode)
+      }
     }
 
-    tab = null
-    view = null
-
-    render() {
-      const { navigation, renderScene } = this.props
+    /**
+     * 渲染路由
+     */
+    renderRouteScene = () => {
+      const { navigation } = this.props
+      const { renderScene } = this.props
       const { routes } = navigation.state
       const { loaded, style } = this.state
-      const Background = BackgroundView || View
       return (
-        <Background
-          style={styles.views}
-          ref={ref => (this.view = ref)}
-          onWithoutFeedback={this.onWithoutFeedback}
-        >
-          <CustomTabView
-            routes={routes}
-            navigation={navigation}
-            ref={ref => (this.tab = ref)}
-            onTabPress={this.props.onTabPress}
-            onIndexChange={this.props.onIndexChange}
-            onTabLongPress={this.props.onTabLongPress}
-            onStyleChange={this.onStyleChange.bind(this)}
-          />
-          <ScreenContainer style={[styles.pages, style]}>
-            {routes.map((route, index) => {
-              if (!loaded.includes(index)) {
-                // Don't render a screen if we've never navigated to it
-                return null
-              }
+        <ScreenContainer style={[styles.pages, style]}>
+          {routes.map((route, index) => {
+            if (!loaded.includes(index)) {
+              // Don't render a screen if we've never navigated to it
+              return null
+            }
 
-              const isFocused = navigation.state.index === index
+            const isFocused = navigation.state.index === index
 
-              return (
-                <ResourceSavingScene
-                  key={route.key}
-                  style={StyleSheet.absoluteFill}
-                  isVisible={isFocused}
-                >
-                  {renderScene({ route })}
-                </ResourceSavingScene>
-              )
-            })}
-          </ScreenContainer>
-        </Background>
+            return (
+              <ResourceSavingScene
+                key={route.key}
+                style={StyleSheet.absoluteFill}
+                isVisible={isFocused}
+              >
+                {renderScene({ route })}
+              </ResourceSavingScene>
+            )
+          })}
+        </ScreenContainer>
       )
+    }
+
+    /**
+     * 渲染导航栏
+     */
+    renderTabView = () => {
+      const { navigation } = this.props
+      const { routes } = navigation.state
+      return (
+        <CustomTabView
+          routes={routes}
+          navigation={navigation}
+          ref={ref => (this.tab = ref)}
+          onTabPress={this.props.onTabPress}
+          onIndexChange={this.props.onIndexChange}
+          onTabLongPress={this.props.onTabLongPress}
+          onStyleChange={this.onStyleChange}
+          onModeChange={this.onModeChange}
+        />
+      )
+    }
+
+    state = {
+      style: {},
+      mode: 'bottom',
+      loaded: [this.props.navigation.state.index]
+    }
+
+    render() {
+      const { mode } = this.state
+      const Background = BackgroundView || View
+      switch (mode) {
+        case 'top':
+          return (
+            <Background
+              style={styles.views}
+              ref={ref => (this.view = ref)}
+              onClickBackground={this.onClickBackground}
+            >
+              <View style={styles.views_top}>
+                {this.renderTabView()}
+                {this.renderRouteScene()}
+              </View>
+            </Background>
+          )
+        case 'bottom':
+          return (
+            <Background
+              style={styles.views}
+              ref={ref => (this.view = ref)}
+              onClickBackground={this.onClickBackground}
+            >
+              <View style={styles.views_bottom}>
+                {this.renderRouteScene()}
+                {this.renderTabView()}
+              </View>
+            </Background>
+          )
+        case 'left':
+          return (
+            <Background
+              style={styles.views}
+              ref={ref => (this.view = ref)}
+              onClickBackground={this.onClickBackground}
+            >
+              <View style={styles.views_left}>
+                {this.renderTabView()}
+                {this.renderRouteScene()}
+              </View>
+            </Background>
+          )
+        case 'right':
+          return (
+            <Background
+              style={styles.views}
+              ref={ref => (this.view = ref)}
+              onClickBackground={this.onClickBackground}
+            >
+              <View style={styles.views_right}>
+                {this.renderRouteScene()}
+                {this.renderTabView()}
+              </View>
+            </Background>
+          )
+        default:
+          return null
+      }
     }
   }
 }
 
+/**
+ * 创建导航栏
+ * @param {*} TabView
+ */
 export function createNavTab(TabView) {
   class NavigationView extends React.Component {
     _renderScene = ({ route }) => {
@@ -235,10 +333,23 @@ const styles = StyleSheet.create({
     top: 3000
   },
   views: {
-    flex: 1,
-    flexDirection: 'row'
+    flex: 1
   },
   pages: {
     flex: 1
+  },
+  views_top: {
+    flex: 1
+  },
+  views_bottom: {
+    flex: 1
+  },
+  views_left: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  views_right: {
+    flex: 1,
+    flexDirection: 'row'
   }
 })
